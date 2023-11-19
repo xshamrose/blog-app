@@ -6,7 +6,6 @@ function Registration() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleRegister = () => {
-    // Send a POST request to the /register route on the server
     fetch("http://localhost:3001/register", {
       method: "POST",
       headers: {
@@ -28,6 +27,7 @@ function Registration() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        <input required type="email" placeholder="email" />
         <input
           required
           type="password"
@@ -35,13 +35,7 @@ function Registration() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <input
-          required
-          type="password"
-          placeholder="Repeat Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+
         <button onClick={handleRegister}>Register</button>
         <span>
           Do you have an account?

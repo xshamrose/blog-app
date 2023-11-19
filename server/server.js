@@ -39,7 +39,11 @@ app.post("/login", (req, res) => {
   });
 });
 
-const port = 8800;
+app.get("/test", (req, res) => {
+  res.json("it works");
+});
+
+const port = 3004;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
