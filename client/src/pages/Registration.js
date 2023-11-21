@@ -1,20 +1,27 @@
 import React from "react";
 import { useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 function Registration() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const handleRegister = () => {
-    fetch("http://localhost:3001/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((response) => response.text())
-      .then((message) => console.log(message));
+  const [inputs, setInputs] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleRegister = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/auth/register", inputs);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="auth">
@@ -24,19 +31,28 @@ function Registration() {
           required
           type="text"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          autoComplete="on"
+          onChange={handleRegister}
         />
-        <input required type="email" placeholder="email" />
+        <input
+          required
+          type="email"
+          placeholder="email"
+          name="email"
+          autoComplete="on"
+          onChange={handleRegister}
+        />
         <input
           required
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          autoComplete="on"
+          onChange={handleRegister}
         />
 
-        <button onClick={handleRegister}>Register</button>
+        <button onClick={handleSubmit}>Register</button>
         <span>
           Do you have an account?
           <Link to="/login">Login</Link>
