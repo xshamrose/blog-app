@@ -18,7 +18,6 @@ export const register = (req, res) => {
     db.query(q, [values], (err, data) => {
       if (err) return res.json(err);
       return res.json(200).json("user has been created");
-      console.log(data);
     });
   });
 };
