@@ -11,7 +11,7 @@ app.use("/server/auth", authRoutes);
 app.use("/server/users", userRoutes);
 app.use("/server/posts", postRoutes);
 
-const port = 8800;
+const port = 4444;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
