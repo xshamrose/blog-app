@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 function Registration() {
@@ -16,11 +15,33 @@ function Registration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // try {
+    //   const res = await axios.post("auth/register", inputs);
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    const apiUrl = "http://localhost:4444/api/auth/register";
+
     try {
-      const res = await axios.post("/auth/register", inputs);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: inputs.username,
+          email: inputs.email,
+          password: inputs.password,
+        }),
+      });
+      if (response.ok) {
+        alert("User registered successfully!");
+      } else {
+        console.error("Registration failed");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
   return (
