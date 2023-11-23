@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Registration() {
   const [inputs, setInputs] = useState({
@@ -8,7 +8,9 @@ function Registration() {
     email: "",
     password: "",
   });
+  const [err, setError] = useState(null);
 
+  const navigate = useNavigate();
   const handleRegister = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -37,11 +39,18 @@ function Registration() {
       });
       if (response.ok) {
         alert("User registered successfully!");
+        navigate("/login");
       } else {
-        console.error("Registration failed");
+        if (response.status === 409) {
+          const errorData = await response.json();
+          setError(errorData.error);
+        } else {
+          setError("Registration failed. Please try again.");
+        }
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+      setError("Error during registration. Please try again.");
+      console.error("Error during registration:", err);
     }
   };
   return (
@@ -74,6 +83,7 @@ function Registration() {
         />
 
         <button onClick={handleSubmit}>Register</button>
+        {err && <p>{err}</p>}
         <span>
           Do you have an account?
           <Link to="/login">Login</Link>

@@ -1,8 +1,10 @@
 import React from "react";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 function Navbar() {
+  const { user } = useAuth();
   return (
     <div className="navbar">
       <div className="container">
@@ -35,8 +37,14 @@ function Navbar() {
           <Link className="link" to="/?cat=design">
             DESIGN
           </Link>
-          <span>Sham</span>
-          <span>Logout</span>
+          <span>{user}</span>
+          {user ? (
+            <span>Logout</span>
+          ) : (
+            <Link className="link" to="/login">
+              Login
+            </Link>
+          )}
           <span className="write">
             <Link className="link" to="/Write">
               Write
