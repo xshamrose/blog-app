@@ -1,47 +1,41 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import axios from "axios";
 
 function Login() {
-  const [inputs, setInputs] = useState({
-    username: "",
-    password: "",
-  });
   const [err, setError] = useState(null);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, inputs, setInputs } = useAuth();
 
   const handleLogin = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const apiUrl = "http://localhost:4444/api/auth/login";
 
     try {
-      login(inputs.username, inputs.password);
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: inputs.username,
-          password: inputs.password,
-        }),
+      const response = await axios.post(apiUrl, {
+        username: inputs.username,
+        password: inputs.password,
       });
-      if (response.ok) {
+
+      if (response.status === 200) {
+        setError(null);
         navigate("/");
       } else {
         if (response.status === 409) {
-          const errorData = await response.json();
+          const errorData = response.data;
           setError(errorData.error);
         } else {
-          setError(" Wrong username or password!");
+          setError("Wrong username or password!");
         }
       }
+      login();
     } catch (err) {
-      setError("Error during login. Please try again.");
+      setError("Wrong username or password!");
       console.error("Error during login:", err);
     }
   };
@@ -49,7 +43,7 @@ function Login() {
   return (
     <div className="auth">
       <h2>Login</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           required
           type="text"
@@ -66,7 +60,7 @@ function Login() {
           autoComplete="on"
           onChange={handleLogin}
         />
-        <button onClick={handleSubmit}>Login</button>
+        <button type="submit">Login</button>
         {err && <p>{err}</p>}
         <span>
           Don't you have an account?

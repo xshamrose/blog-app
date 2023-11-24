@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
 function Navbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   return (
     <div className="navbar">
       <div className="container">
@@ -37,9 +37,15 @@ function Navbar() {
           <Link className="link" to="/?cat=design">
             DESIGN
           </Link>
-          <span>{user}</span>
+
           {user ? (
-            <span>Logout</span>
+            <div>
+              <span className="link" style={{ marginRight: "10px" }}>
+                {" "}
+                {user.username}
+              </span>
+              <span onClick={logout}>Logout</span>
+            </div>
           ) : (
             <Link className="link" to="/login">
               Login

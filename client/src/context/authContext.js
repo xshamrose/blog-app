@@ -1,51 +1,62 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const apiUrl = "http://localhost:4444/api/auth/login";
 
-  const login = async (username, password) => {
-    const apiUrl = "http://localhost:4444/api/auth/login";
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
+  const login = async () => {
+    try {
+      const response = await axios.post(apiUrl, {
+        username: inputs.username,
+        password: inputs.password,
+      });
 
-    if (response.ok) {
-      setUser(username);
-
-      setError(null);
-    } else {
-      if (response.status === 409) {
-        const errorData = await response.json();
-        setError(errorData.error);
+      if (response.status === 200) {
+        const userData = response.data;
+        setUser(userData);
+        setError(null);
       } else {
-        setError("Wrong username or password!");
+        if (response.status === 409) {
+          const errorData = response.data;
+          setError(errorData.error);
+        } else {
+          setError("Wrong username or password!");
+        }
       }
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+      setError("An unexpected error occurred");
     }
   };
 
   const logout = () => {
-    // Your logout logic here
-    // ...
-
     setUser(null);
     setError(null);
   };
-  useEffect(() => {
-    localStorage.setItem("user", user);
-  }, [user]);
 
+  useEffect(() => {
+    // Store user data in local storage
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
+  useEffect(() => {
+    // Retrieve user data from local storage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
   return (
-    <AuthContext.Provider value={{ user, error, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, error, login, logout, inputs, setInputs }}
+    >
       {children}
     </AuthContext.Provider>
   );
