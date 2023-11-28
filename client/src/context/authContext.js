@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async (inputs) => {
+    await axios.post("http://localhost:4444/api/auth/logout");
     setUser(null);
-    setError(null);
   };
 
   useEffect(() => {

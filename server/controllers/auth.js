@@ -9,11 +9,9 @@ export const register = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Internal Server Error" });
     }
-
     if (data.length) {
       return res.status(409).json({ error: "User already exists!" });
     }
-
     // Hash the password and create a user
 
     const salt = bcrypt.genSaltSync(10);
@@ -27,7 +25,6 @@ export const register = (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
-
       return res.status(200).json({ data });
     });
   });
@@ -68,4 +65,12 @@ export const login = (req, res) => {
       .json(other);
   });
 };
-export const logout = (req, res) => {};
+export const logout = (req, res) => {
+  res
+    .clearCookie("access_token", {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json("user has been logged out.");
+};
