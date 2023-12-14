@@ -5,22 +5,25 @@ import { useAuth } from "../context/authContext";
 
 function Navbar() {
   const { user, logout } = useAuth();
+
   return (
     <div className="navbar">
       <div className="container">
-        <div className="logo">
-          <img
-            src={logo}
-            alt="Logo"
-            style={{
-              height: "70px",
-              width: "90px",
-              border: "none",
-              marginLeft: "10px",
-              borderRadius: "50px",
-            }}
-          />
-        </div>
+        <Link to="/">
+          <div className="logo">
+            <img
+              src={logo}
+              alt="Logo"
+              style={{
+                height: "70px",
+                width: "90px",
+                border: "none",
+                marginLeft: "10px",
+                borderRadius: "50px",
+              }}
+            />
+          </div>
+        </Link>
         <div className="links">
           <Link className="link" to="/?cat=art">
             ART
